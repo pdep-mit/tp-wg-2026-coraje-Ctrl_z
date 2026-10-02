@@ -3,7 +3,7 @@
 **Grupo:** Nombre de Grupo
 
 **Integrantes:**
-- Nombre y Apellido
+- Damian Ariel Paniagua
 - Nombre y Apellido
 - Nombre y Apellido
 - Nombre y Apellido
