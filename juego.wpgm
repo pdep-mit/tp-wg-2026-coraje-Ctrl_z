@@ -1,15 +1,30 @@
 import wollok.game.*
-import objetos.* 
-import configuracion.* 
-
+import objetos.*
+import configuracion.*
+// Importá el archivo donde tengas definida la clase Muro si está en otro archivo
 
 program NombreDeJuego {
 	game.title("Grupo: ... | Nombre de jueguito")
-	game.height(10)
-	game.width(10)
+	game.height(15)
+	game.width(15)
+
+
+	(0..14).forEach({ x =>
+		game.addVisual(new Muro(position = game.at(x, 0)))
+		game.addVisual(new Muro(position = game.at(x, 14)))
+	})
+	
+	
+	(1..13).forEach({ y =>
+		game.addVisual(new Muro(position = game.at(0, y)))
+		game.addVisual(new Muro(position = game.at(14, y)))
+	})
+
+	
+	player.position(game.at(1, 1))
+	game.addVisual(player)
 
 	configuracion.configurarAcciones()
-	game.addVisual(player)
 
 	game.start()
 }

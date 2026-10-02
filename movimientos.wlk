@@ -1,9 +1,13 @@
 import configuracion.* 
 
 object movimiento {
-	method mover(personajeLibre, direccion){
-		const nuevaPosicion = direccion.posicionSiguiente(personajeLibre.position())
-		personajeLibre.position(nuevaPosicion)
+	method mover(personaje, direccion) {
+		const nuevaPosicion = direccion.posicionSiguiente(personaje.position())
+		const hayObstaculo = game.getObjectsIn(nuevaPosicion).any({ elemento => not elemento.esAtravesable() })
+		
+		if (not hayObstaculo) {
+			personaje.position(nuevaPosicion)
+		}
 	}
 }
 
