@@ -4,7 +4,7 @@
 
 **Integrantes:**
 - Damian Ariel Paniagua
-- Nombre y Apellido
+- Delgado Angio Antonella
 - Nombre y Apellido
 - Nombre y Apellido
 - Nombre y Apellido
