@@ -26,3 +26,9 @@ object haciaLaDerecha {
 object haciaLaIzquierda {
 	method posicionSiguiente(posicion) = posicion.left(1)
 }
+
+const objetos = game.getObjectsIn(nuevaPosicion)
+
+objetos.forEach({ objeto =>
+    objeto.interactuarCon(personaje)
+})
