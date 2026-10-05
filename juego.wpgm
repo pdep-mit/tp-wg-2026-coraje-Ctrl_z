@@ -4,7 +4,7 @@ import configuracion.*
 // Importá el archivo donde tengas definida la clase Muro si está en otro archivo
 
 program NombreDeJuego {
-	game.title("Grupo: ... | Nombre de jueguito")
+	game.title("Grupo: Ctrl_z | Escapando del Chiqui Tapia")
 	game.height(15)
 	game.width(15)
 

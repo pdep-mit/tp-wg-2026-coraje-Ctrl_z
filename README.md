@@ -1,6 +1,6 @@
-# Wollok Game: Título de juego
+# Wollok Game: Escapando del Chiqui Tapia
 
-**Grupo:** Nombre de Grupo
+**Grupo:** ctrl_Z
 
 **Integrantes:**
 - Damian Ariel Paniagua
