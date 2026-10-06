@@ -7,6 +7,14 @@ object movimiento {
 		
 		if (not hayObstaculo) {
 			personaje.position(nuevaPosicion)
+
+			//movi estas lineas dentro del método mover() para que se ejecuten después de que el
+			//personaje cambie de posición, por eso tiraba error
+			const objetos = game.getObjectsIn(nuevaPosicion)
+
+			objetos.forEach({ objeto =>
+		    objeto.interactuarCon(personaje)
+			})
 		}
 	}
 }
@@ -27,8 +35,3 @@ object haciaLaIzquierda {
 	method posicionSiguiente(posicion) = posicion.left(1)
 }
 
-const objetos = game.getObjectsIn(nuevaPosicion)
-
-objetos.forEach({ objeto =>
-    objeto.interactuarCon(personaje)
-})

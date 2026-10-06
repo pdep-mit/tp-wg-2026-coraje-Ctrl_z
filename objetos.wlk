@@ -12,6 +12,8 @@ class Muro {
 	method image() = "muro.png"
 	
 	method esAtravesable() = false
+    method interactuarCon(jugador){}
+
 }
 
 class Mate {
@@ -34,6 +36,8 @@ class Puerta {
     method image() = "puerta.png"
 
     method esAtravesable() = leandroparedes.satisfecho
+
+    method interactuarCon(jugador){}
 }
 
 class LeandroParedes {
