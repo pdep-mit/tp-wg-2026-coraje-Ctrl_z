@@ -1,6 +1,7 @@
 import wollok.game.*
 import objetos.*
 import configuracion.*
+import habitaciones.*
 // Importá el archivo donde tengas definida la clase Muro si está en otro archivo
 
 program NombreDeJuego {
