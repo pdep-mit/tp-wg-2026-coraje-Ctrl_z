@@ -1,22 +1,22 @@
+import wollok.game.*
 import configuracion.* 
-
 object movimiento {
-	method mover(personaje, direccion) {
-		const nuevaPosicion = direccion.posicionSiguiente(personaje.position())
-		const hayObstaculo = game.getObjectsIn(nuevaPosicion).any({ elemento => not elemento.esAtravesable() })
-		
-		if (not hayObstaculo) {
-			personaje.position(nuevaPosicion)
-
-			//movi estas lineas dentro del método mover() para que se ejecuten después de que el
-			//personaje cambie de posición, por eso tiraba error
-			const objetos = game.getObjectsIn(nuevaPosicion)
-
-			objetos.forEach({ objeto =>
-		    objeto.interactuarCon(personaje)
-			})
-		}
-	}
+    method mover(personaje, direccion) {
+        const nuevaPosicion = direccion.posicionSiguiente(personaje.position())
+        const objetosEnDestino = game.getObjectsIn(nuevaPosicion)
+        const hayObstaculo = objetosEnDestino.any({ elemento => not elemento.esAtravesable() })
+        
+        if (not hayObstaculo) {
+            personaje.position(nuevaPosicion)
+            objetosEnDestino.forEach({ objeto =>
+                objeto.interactuarCon(personaje)
+            })
+        } else {
+            objetosEnDestino.forEach({ objeto =>
+                objeto.interactuarCon(personaje)
+            })
+        }
+    }
 }
 
 object haciaArriba {
