@@ -33,19 +33,32 @@ program NombreDeJuego {
     )
     game.addVisual(mate)
 
-	const leandroParedes = new NPC(
+	const riquelme = new NPC(
         itemDeseado = "mate", 
-        image = "leandroparedes.png", 
+        image = "riquelme.png", 
         position = game.at(8, 8)
     )
-    game.addVisual(leandroParedes)
+    game.addVisual(riquelme)
 
 	const puerta = new Puerta(
         position = game.at(13, 13),
-        npcCondicion = leandroParedes
+        npcCondicion = riquelme
     )
     game.addVisual(puerta)
 	
+	const fotoDeMessi = new Item(
+    nombre = "foto de messi",
+    image = "foto_messi.png",
+    position = game.at(3, 3) 
+	)  
+	game.addVisual(fotoDeMessi) 
+
+	const dePaul = new NPC(
+    itemDeseado = "foto de messi",
+    image = "depaul.png",     
+    position = game.at(10, 10) 
+	) 
+	game.addVisual(dePaul)
 
 	configuracion.configurarAcciones()
 

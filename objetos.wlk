@@ -67,7 +67,7 @@ class Puerta {
                 game.stop()
             })
         } else {
-            game.say(self, "La puerta está trabada. Necesitás la aprobación de Paredes.")
+            game.say(self, "La puerta está trabada. Necesitás la aprobación de Riquelme.")
         }
     }
 }
