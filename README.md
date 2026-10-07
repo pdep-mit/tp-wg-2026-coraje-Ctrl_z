@@ -24,11 +24,11 @@ Recuerden que para cada checkpoint hay [expectativas mínimas](https://docs.goog
 
 ## Objetivo
 
-TODO
+Escapar de la AFA consiguiendo la aprobación de Riquelme y De Paul. Recogé el mate y acercate a Riquelme para dárselo; recogé la foto de Messi y acercate a De Paul. Cuando ambos estén satisfechos, entrá por la puerta para ganar.
 
 ## Controles
 
-TODO
+Usá las flechas del teclado para moverte. Los objetos se recogen al pisar su casilla. Para hablar con un NPC, intentá moverte hacia su casilla desde una casilla vecina. Los muros y los NPCs bloquean el movimiento; la puerta permite pasar cuando ambos NPCs están satisfechos.
 
 # Explicaciones
 

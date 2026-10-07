@@ -40,12 +40,6 @@ program NombreDeJuego {
     )
     game.addVisual(riquelme)
 
-	const puerta = new Puerta(
-        position = game.at(13, 13),
-        npcCondicion = riquelme
-    )
-    game.addVisual(puerta)
-	
 	const fotoDeMessi = new Item(
     nombre = "foto de messi",
     image = "foto_messi.png",
@@ -59,6 +53,12 @@ program NombreDeJuego {
     position = game.at(10, 10) 
 	) 
 	game.addVisual(dePaul)
+
+	const puerta = new Puerta(
+        position = game.at(13, 13),
+        npcsCondicion = [riquelme, dePaul]
+    )
+    game.addVisual(puerta)
 
 	configuracion.configurarAcciones()
 

@@ -1,0 +1,59 @@
+import wollok.game.*
+import objetos.*
+import movimientos.*
+
+describe "La salida requiere la aprobación de ambos NPCs" {
+    const riquelme = new NPC(position = game.at(8, 8), image = "riquelme.png", itemDeseado = "mate")
+    const dePaul = new NPC(position = game.at(10, 10), image = "depaul.png", itemDeseado = "foto de messi")
+    const puerta = new Puerta(position = game.at(13, 13), npcsCondicion = [riquelme, dePaul])
+
+    test "La puerta está cerrada al comenzar" {
+        assert.notThat(puerta.esAtravesable())
+    }
+
+    test "La aprobación de Riquelme no alcanza" {
+        riquelme.satisfecho(true)
+        assert.notThat(puerta.esAtravesable())
+    }
+
+    test "La aprobación de De Paul no alcanza" {
+        dePaul.satisfecho(true)
+        assert.notThat(puerta.esAtravesable())
+    }
+
+    test "La puerta abre con ambas aprobaciones" {
+        riquelme.satisfecho(true)
+        dePaul.satisfecho(true)
+        assert.that(puerta.esAtravesable())
+    }
+
+    test "De Paul no acepta el mate" {
+        player.agarrar(new Item(position = game.at(5, 5), nombre = "mate", image = "mate.png"))
+        game.addVisual(dePaul)
+        dePaul.interactuarCon(player)
+        assert.notThat(dePaul.satisfecho())
+    }
+
+    test "Recoger la foto y acercarse a De Paul obtiene su aprobación sin atravesarlo" {
+        const foto = new Item(position = game.at(3, 3), nombre = "foto de messi", image = "foto_messi.png")
+        player.position(game.at(2, 3))
+        game.addVisual(player)
+        game.addVisual(foto)
+        game.addVisual(dePaul)
+
+        movimiento.mover(player, haciaLaDerecha)
+        assert.that(player.tieneItem("foto de messi"))
+        assert.notThat(game.getObjectsIn(game.at(3, 3)).contains(foto))
+
+        player.position(game.at(9, 10))
+        movimiento.mover(player, haciaLaDerecha)
+        assert.that(dePaul.satisfecho())
+        assert.equals(game.at(9, 10), player.position())
+        assert.notThat(puerta.esAtravesable())
+
+        player.agarrar(new Item(position = game.at(5, 5), nombre = "mate", image = "mate.png"))
+        game.addVisual(riquelme)
+        riquelme.interactuarCon(player)
+        assert.that(puerta.esAtravesable())
+    }
+}

@@ -55,10 +55,10 @@ class Muro {
 
 class Puerta {
     var property position
-    var property npcCondicion 
+    const property npcsCondicion
 
     method image() = "puerta.png"
-    method esAtravesable() = npcCondicion.satisfecho()
+    method esAtravesable() = npcsCondicion.all({ npc => npc.satisfecho() })
 
    method interactuarCon(jugador) {
         if (self.esAtravesable()) {
@@ -67,7 +67,7 @@ class Puerta {
                 game.stop()
             })
         } else {
-            game.say(self, "La puerta está trabada. Necesitás la aprobación de Riquelme.")
+            game.say(self, "La puerta está trabada. Necesitás la aprobación de Riquelme y De Paul.")
         }
     }
 }
