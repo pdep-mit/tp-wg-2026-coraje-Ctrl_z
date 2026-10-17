@@ -53,24 +53,35 @@ class Muro {
     method interactuarCon(jugador) {}
 }
 
+
 class Puerta {
     var property position
     const property npcsCondicion
+    const property habitacionActual
+    const property siguienteHabitacion
 
     method image() = "puerta.png"
-    method esAtravesable() = npcsCondicion.all({ npc => npc.satisfecho() })
 
-   method interactuarCon(jugador) {
+    method esAtravesable() =
+        npcsCondicion.all({ npc => npc.satisfecho() })
+
+    method interactuarCon(jugador) {
         if (self.esAtravesable()) {
-            game.say(jugador, "¡Escapaste de la AFA! ¡GANASTE!")           
-            game.schedule(2000, {
-                game.stop()
-            })
+            if (siguienteHabitacion == null) {
+                game.say(jugador, "¡Escapaste de la AFA! ¡GANASTE!")
+                game.schedule(2000, {
+                    game.stop()
+                })
+            } else {
+                habitacionActual.cambiarA(siguienteHabitacion)
+            }
         } else {
-            game.say(self, "La puerta está trabada. Necesitás la aprobación de Riquelme y De Paul.")
+            game.say(self,
+                "La puerta está trabada. Necesitás cumplir los requisitos.")
         }
     }
 }
+
 
 
 
