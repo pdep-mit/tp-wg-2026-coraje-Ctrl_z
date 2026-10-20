@@ -8,14 +8,10 @@ object movimiento {
         
         if (not hayObstaculo) {
             personaje.position(nuevaPosicion)
-            objetosEnDestino.forEach({ objeto =>
-                objeto.interactuarCon(personaje)
-            })
-        } else {
-            objetosEnDestino.forEach({ objeto =>
-                objeto.interactuarCon(personaje)
-            })
         }
+        objetosEnDestino.forEach({ objeto =>
+            objeto.interactuarCon(personaje)
+        })
     }
 }
 

@@ -1,0 +1,81 @@
+import wollok.game.*
+import objetos.*
+import habitaciones.*
+import movimientos.*
+
+describe "Cambio de habitaciones y salida final" {
+    const origen = new Habitacion(posicionInicial = game.at(1, 1))
+    const destino = new Habitacion(posicionInicial = game.at(2, 2))
+    const guardia = new NPC(position = game.at(8, 8), image = "riquelme.png", itemDeseado = "mate")
+    const paso = new Puerta(position = game.at(3, 1), npcsCondicion = [guardia], habitacionActual = origen, siguienteHabitacion = destino)
+    const salida = new Puerta(position = game.at(3, 2), npcsCondicion = [])
+
+    method preparar() {
+        origen.agregarObjeto(paso)
+        destino.agregarObjeto(salida)
+        player.position(game.at(2, 1))
+        game.addVisual(player)
+        origen.cargar()
+    }
+
+    test "Una puerta bloqueada conserva la habitacion y la posicion" {
+        self.preparar()
+        movimiento.mover(player, haciaLaDerecha)
+        assert.equals(game.at(2, 1), player.position())
+        assert.that(game.getObjectsIn(paso.position()).contains(paso))
+        assert.notThat(game.getObjectsIn(salida.position()).contains(salida))
+        assert.notThat(player.gano())
+    }
+
+    test "La transicion descarga el origen y permite ganar en la salida final" {
+        self.preparar()
+        guardia.satisfecho(true)
+        movimiento.mover(player, haciaLaDerecha)
+        assert.equals(destino.posicionInicial(), player.position())
+        assert.notThat(game.getObjectsIn(paso.position()).contains(paso))
+        assert.that(game.getObjectsIn(salida.position()).contains(salida))
+        assert.notThat(player.gano())
+        movimiento.mover(player, haciaLaDerecha)
+        assert.equals(salida.position(), player.position())
+        assert.that(player.gano())
+    }
+
+    test "Un item recogido no reaparece al volver a cargar su habitacion" {
+        const mate = new Item(position = game.at(2, 1), nombre = "mate", image = "mate.png")
+        origen.agregarObjeto(mate)
+        player.position(game.at(1, 1))
+        game.addVisual(player)
+        origen.cargar()
+        movimiento.mover(player, haciaLaDerecha)
+        origen.cambiarA(destino)
+        destino.cambiarA(origen)
+        assert.that(player.inventario().contains(mate))
+        assert.equals(1, player.inventario().size())
+        assert.notThat(game.getObjectsIn(mate.position()).contains(mate))
+    }
+
+    test "Los niveles configurados permiten completar el juego" {
+        game.addVisual(player)
+        niveles.iniciar()
+        player.position(game.at(4, 5))
+        movimiento.mover(player, haciaLaDerecha)
+        player.position(game.at(7, 8))
+        movimiento.mover(player, haciaLaDerecha)
+        player.position(game.at(12, 13))
+        movimiento.mover(player, haciaLaDerecha)
+        assert.equals(game.at(1, 1), player.position())
+        assert.notThat(player.gano())
+        assert.that(game.getObjectsIn(game.at(8, 8)).isEmpty())
+        player.position(game.at(12, 13))
+        movimiento.mover(player, haciaLaDerecha)
+        assert.notThat(player.gano())
+        assert.equals(game.at(12, 13), player.position())
+        player.position(game.at(2, 3))
+        movimiento.mover(player, haciaLaDerecha)
+        player.position(game.at(9, 10))
+        movimiento.mover(player, haciaLaDerecha)
+        player.position(game.at(12, 13))
+        movimiento.mover(player, haciaLaDerecha)
+        assert.that(player.gano())
+    }
+}

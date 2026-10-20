@@ -1,7 +1,6 @@
-// Este archivo puede ser borrado cuando empiecen 
-// a desarrollar su trabajo
 object player {
     var property position = game.center()
+    var property gano = false
     const property inventario = [] 
     method image() = "player2.png"
     method agarrar(unItem) {
@@ -57,8 +56,8 @@ class Muro {
 class Puerta {
     var property position
     const property npcsCondicion
-    const property habitacionActual
-    const property siguienteHabitacion
+    const property habitacionActual = null
+    const property siguienteHabitacion = null
 
     method image() = "puerta.png"
 
@@ -66,8 +65,9 @@ class Puerta {
         npcsCondicion.all({ npc => npc.satisfecho() })
 
     method interactuarCon(jugador) {
-        if (self.esAtravesable()) {
+        if (self.esAtravesable() and not jugador.gano()) {
             if (siguienteHabitacion == null) {
+                jugador.gano(true)
                 game.say(jugador, "¡Escapaste de la AFA! ¡GANASTE!")
                 game.schedule(2000, {
                     game.stop()
@@ -75,7 +75,7 @@ class Puerta {
             } else {
                 habitacionActual.cambiarA(siguienteHabitacion)
             }
-        } else {
+        } else if (not jugador.gano()) {
             game.say(self,
                 "La puerta está trabada. Necesitás cumplir los requisitos.")
         }

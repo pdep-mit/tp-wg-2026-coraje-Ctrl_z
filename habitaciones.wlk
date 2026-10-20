@@ -31,13 +31,13 @@ class Habitacion {
     }
 
     method cargar() {
-        objetos.forEach({ objeto =>
+        objetos.filter({ objeto => not player.inventario().contains(objeto) }).forEach({ objeto =>
             game.addVisual(objeto)
         })
     }
 
     method descargar() {
-        objetos.forEach({ objeto =>
+        objetos.filter({ objeto => game.getObjectsIn(objeto.position()).contains(objeto) }).forEach({ objeto =>
             game.removeVisual(objeto)
         })
     }
@@ -72,16 +72,31 @@ object niveles {
             position = game.at(5, 5)
         )
 
-        const foto = new Item(
-            nombre = "foto de messi",
-            image = "foto_messi.png",
-            position = game.at(3, 3)
-        )
-
         const riquelme = new NPC(
             itemDeseado = "mate",
             image = "riquelme.png",
             position = game.at(8, 8)
+        )
+
+        const puerta = new Puerta(
+            position = game.at(13, 13),
+            npcsCondicion = [riquelme],
+            habitacionActual = habitacion1,
+            siguienteHabitacion = habitacion2
+        )
+
+        habitacion1.agregarObjeto(mate)
+        habitacion1.agregarObjeto(riquelme)
+        habitacion1.agregarObjeto(puerta)
+    }
+
+    method prepararHabitacion2() {
+        habitacion2.agregarBordes()
+
+        const foto = new Item(
+            nombre = "foto de messi",
+            image = "foto_messi.png",
+            position = game.at(3, 3)
         )
 
         const dePaul = new NPC(
@@ -90,24 +105,12 @@ object niveles {
             position = game.at(10, 10)
         )
 
-        const puerta = new Puerta(
+        habitacion2.agregarObjeto(foto)
+        habitacion2.agregarObjeto(dePaul)
+        habitacion2.agregarObjeto(new Puerta(
             position = game.at(13, 13),
-            npcsCondicion = [riquelme, dePaul],
-            habitacionActual = habitacion1,
-            siguienteHabitacion = habitacion2
-        )
-
-        habitacion1.agregarObjeto(mate)
-        habitacion1.agregarObjeto(foto)
-        habitacion1.agregarObjeto(riquelme)
-        habitacion1.agregarObjeto(dePaul)
-        habitacion1.agregarObjeto(puerta)
-    }
-
-    method prepararHabitacion2() {
-        habitacion2.agregarBordes()
-
-        // Acá agregaremos los objetos y NPC del segundo nivel.
+            npcsCondicion = [dePaul]
+        ))
     }
 
     method iniciar() {
