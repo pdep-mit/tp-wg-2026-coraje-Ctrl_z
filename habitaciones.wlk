@@ -102,16 +102,23 @@ method prepararHabitacion2() {
         const tinta = new Item(nombre = "tinta", image = "tinta.png", position = game.at(4, 2))
 
         const impresora = new Impresora(position = game.at(5, 5))
+        const llaveArmario = new Item(
+            nombre = "llave de armario",
+            image = "llave.png",
+            position = game.at(8, 7)
+        )
 
-        const dePaul = new NPC(
+        const dePaul = new NPCConRecompensa(
             itemDeseado = "foto de messi",
             image = "depaul.png",
-            position = game.at(8, 8)
+            position = game.at(8, 8),
+            itemRecompensa = llaveArmario,
+            habitacion = habitacion2,
+            mensajeAgradecimiento = "¡Qué grande el Capitán! Te dejo la llave acá al lado."
         )
 
         const armario = new Armario(
-            position = game.at(2, 8),
-            npcRequisito = dePaul
+            position = game.at(2, 8)
         )
 
         const puerta2 = new Puerta(
@@ -127,7 +134,7 @@ method prepararHabitacion2() {
         habitacion2.agregarObjeto(dePaul)
         habitacion2.agregarObjeto(armario)
         habitacion2.agregarObjeto(puerta2)
-    } 
+    }
     
     method prepararHabitacion3() {
         habitacion3.agregarBordes()

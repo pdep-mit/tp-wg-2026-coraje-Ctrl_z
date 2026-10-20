@@ -77,7 +77,6 @@ class Impresora {
 }  
 class Armario {
     var property position
-    const property npcRequisito
     var property utilizado = false
 
     method image() = "armario.png"
@@ -86,12 +85,12 @@ class Armario {
     method interactuarCon(jugador) {
         if (utilizado) {
             game.say(self, "El armario ya está vacío.")
-        } else if (npcRequisito.satisfecho()) {
-            jugador.estaDisfrazado(true) // Cambia directamente el estado del player
+        } else if (jugador.tieneItem("llave de armario")) {
+            jugador.estaDisfrazado(true)
             utilizado = true
-            game.say(jugador, "¡Con este uniforme de Sancor Seguros puedo engañar al Chiqui Tapia!.")
+            game.say(jugador, "¡Con este uniforme de Sancor Seguros puedo engañar al Chiqui Tapia!")
         } else {
-            game.say(self, "El armario está cerrado. De Paul necesita su foto primero.")
+            game.say(self, "El armario está bajo llave. Necesitás conseguir la llave.")
         }
     }
 }
@@ -100,19 +99,44 @@ class NPC {
     const property image
     const property itemDeseado
     var property satisfecho = false
+    const property mensajeAgradecimiento = "¡Gracias por el " + itemDeseado + "! Podés pasar."
+    const property mensajeEspera = "Necesito un " + itemDeseado + " para dejarte pasar..."
+    const property mensajeSatisfecho = "Ya tengo lo que necesito, ¡andá!"
+
     method esAtravesable() = false
+
+    method consumirItemDeseado(jugador) {
+        if (itemDeseado != "") {
+            const itemAConsumir = jugador.buscarItem(itemDeseado)
+            jugador.removerItem(itemAConsumir)
+        }
+    }
 
     method interactuarCon(jugador) {
         if (self.satisfecho()) {
-            game.say(self, "")//esto es para cuando tengamos otros NPC
+            game.say(self, mensajeSatisfecho)
         } else if (jugador.tieneItem(itemDeseado)) {
+            self.consumirItemDeseado(jugador)
             satisfecho = true
-            game.say(self, "¡Gracias por el " + itemDeseado + "! Podés pasar.")
+            game.say(self, mensajeAgradecimiento)
+            self.darRecompensa(jugador)
         } else {
-            game.say(self, "Necesito un " + itemDeseado + " para dejarte pasar...")
+            game.say(self, mensajeEspera)
         }
     }
-} 
+    method darRecompensa(jugador) {}
+}
+class NPCConRecompensa inherits NPC {
+    const property itemRecompensa
+    var property habitacion = null
+    override method darRecompensa(jugador) {
+        game.addVisual(itemRecompensa)
+        if (habitacion != null) {
+            habitacion.agregarObjeto(itemRecompensa)
+        }
+        game.say(self, "¡Ahí te dejé la " + itemRecompensa.nombre() + " en el piso!")
+    }
+}
 class NPCJefe inherits NPC {
 
     override method interactuarCon(jugador) {
