@@ -18,4 +18,3 @@ program NombreDeJuego {
 
     game.start()
 }
-

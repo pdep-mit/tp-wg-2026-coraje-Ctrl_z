@@ -58,9 +58,14 @@ object niveles {
         posicionInicial = game.at(1, 1)
     )
 
+    const habitacion3 = new Habitacion(
+        posicionInicial = game.at(1, 1)
+    )
+
     method preparar() {
         self.prepararHabitacion1()
         self.prepararHabitacion2()
+        self.prepararHabitacion3()
     }
 
     method prepararHabitacion1() {
@@ -90,27 +95,58 @@ object niveles {
         habitacion1.agregarObjeto(puerta)
     }
 
-    method prepararHabitacion2() {
+method prepararHabitacion2() {
         habitacion2.agregarBordes()
 
-        const foto = new Item(
-            nombre = "foto de messi",
-            image = "foto_messi.png",
-            position = game.at(3, 3)
-        )
+        const papel = new Item(nombre = "papel", image = "papel.png", position = game.at(2, 2))
+        const tinta = new Item(nombre = "tinta", image = "tinta.png", position = game.at(4, 2))
+
+        const impresora = new Impresora(position = game.at(5, 5))
 
         const dePaul = new NPC(
             itemDeseado = "foto de messi",
             image = "depaul.png",
-            position = game.at(10, 10)
+            position = game.at(8, 8)
         )
 
-        habitacion2.agregarObjeto(foto)
-        habitacion2.agregarObjeto(dePaul)
-        habitacion2.agregarObjeto(new Puerta(
+        const armario = new Armario(
+            position = game.at(2, 8),
+            npcRequisito = dePaul
+        )
+
+        const puerta2 = new Puerta(
             position = game.at(13, 13),
-            npcsCondicion = [dePaul]
-        ))
+            npcsCondicion = [dePaul],
+            habitacionActual = habitacion2,
+            siguienteHabitacion = habitacion3
+        )
+
+        habitacion2.agregarObjeto(papel)
+        habitacion2.agregarObjeto(tinta)
+        habitacion2.agregarObjeto(impresora)
+        habitacion2.agregarObjeto(dePaul)
+        habitacion2.agregarObjeto(armario)
+        habitacion2.agregarObjeto(puerta2)
+    } 
+    
+    method prepararHabitacion3() {
+        habitacion3.agregarBordes()
+
+        const chiquiTapia = new NPCJefe(
+            itemDeseado = "", 
+            image = "chiqui.png", 
+            position = game.at(7, 7)
+        )
+
+        const puertaFinal = new Puerta(
+            position = game.at(13, 13),
+            npcsCondicion = [chiquiTapia],
+            habitacionActual = habitacion3,
+            siguienteHabitacion = null
+        )
+
+        habitacion3.agregarObjeto(chiquiTapia)
+        habitacion3.agregarObjeto(puertaFinal)
     }
 
     method iniciar() {
