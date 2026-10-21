@@ -2,17 +2,21 @@ import wollok.game.*
 import configuracion.* 
 object movimiento {
     method mover(personaje, direccion) {
-        const nuevaPosicion = direccion.posicionSiguiente(personaje.position())
-        const objetosEnDestino = game.getObjectsIn(nuevaPosicion)
-        const hayObstaculo = objetosEnDestino.any({ elemento => not elemento.esAtravesable() })
-        
-        if (not hayObstaculo) {
-            personaje.position(nuevaPosicion)
-        }
-        objetosEnDestino.forEach({ objeto =>
-            objeto.interactuarCon(personaje)
-        })
+    const nuevaPosicion = direccion.posicionSiguiente(personaje.position())
+    const objetosEnDestino = game.getObjectsIn(nuevaPosicion)
+
+    const hayObstaculo = objetosEnDestino.any({ objeto =>
+        not objeto.esAtravesable()
+    })
+
+    if (not hayObstaculo) {
+        personaje.position(nuevaPosicion)
     }
+
+    objetosEnDestino
+        .filter({ objeto => objeto.esInteractuable() })
+        .forEach({ objeto => objeto.interactuarCon(personaje) })
+}
 }
 
 object haciaArriba {

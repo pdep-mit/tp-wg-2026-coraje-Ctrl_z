@@ -27,20 +27,26 @@ class Item {
     var property position
     const property nombre
     const property image
+    var property recogido = false
 
     method esAtravesable() = true
+    method esInteractuable() = true
+    method puedeMostrarse() = not recogido
 
     method interactuarCon(jugador) {
+      if (not recogido) {
         jugador.agarrar(self)
+        recogido = true
         game.removeVisual(self)
         game.say(jugador, "Agarré " + nombre)
+      }
     }
 }
 
 class Disfraz inherits Item {
 
     override method interactuarCon(jugador) {
-        super(jugador)
+        super.interactuarCon(jugador)
         jugador.estaDisfrazado(true)
         game.say(jugador, "¡Con esta ropa de Sancor Seguros puedo engañar al Chiqui Tapia!.")
     }
@@ -51,8 +57,11 @@ class Impresora {
 
     method image() = "impresora.png"
     method esAtravesable() = false
+    method esInteractuable() = true 
+    method puedeMostrarse() = true
 
     method interactuarCon(jugador) {
+
         if (imprimio) {
             game.say(self, "La impresora ya fue utilizada.")
         } else if (jugador.tieneItem("papel") and jugador.tieneItem("tinta")) {
@@ -60,6 +69,8 @@ class Impresora {
             const tinta = jugador.buscarItem("tinta")
             jugador.removerItem(papel)
             jugador.removerItem(tinta)
+            papel.recogido(true)
+            tinta.recogido(true)
 
             const fotoDeMessi = new Item(
                 nombre = "foto de messi", 
@@ -75,12 +86,15 @@ class Impresora {
         }
     }
 }  
+
 class Armario {
     var property position
     var property utilizado = false
 
     method image() = "armario.png"
     method esAtravesable() = false
+    method esInteractuable() = true
+    method puedeMostrarse() = true
 
     method interactuarCon(jugador) {
         if (utilizado) {
@@ -94,6 +108,7 @@ class Armario {
         }
     }
 }
+
 class NPC {
     var property position
     const property image
@@ -104,12 +119,16 @@ class NPC {
     const property mensajeSatisfecho = "Ya tengo lo que necesito, ¡andá!"
 
     method esAtravesable() = false
+    method esInteractuable() = true
+    method puedeMostrarse() = true
 
     method consumirItemDeseado(jugador) {
-        if (itemDeseado != "") {
-            const itemAConsumir = jugador.buscarItem(itemDeseado)
-            jugador.removerItem(itemAConsumir)
-        }
+
+     if (itemDeseado != "") {
+        const itemAConsumir = jugador.buscarItem(itemDeseado)
+        jugador.removerItem(itemAConsumir)
+        itemAConsumir.recogido(true)
+     }
     }
 
     method interactuarCon(jugador) {
@@ -126,17 +145,21 @@ class NPC {
     }
     method darRecompensa(jugador) {}
 }
+
 class NPCConRecompensa inherits NPC {
     const property itemRecompensa
     var property habitacion = null
+
     override method darRecompensa(jugador) {
-        game.addVisual(itemRecompensa)
-        if (habitacion != null) {
-            habitacion.agregarObjeto(itemRecompensa)
-        }
-        game.say(self, "¡Ahí te dejé la " + itemRecompensa.nombre() + " en el piso!")
+    if (habitacion != null) {
+        habitacion.agregarObjeto(itemRecompensa)
+    }
+
+    game.addVisual(itemRecompensa)
+    game.say(self, "¡Ahí te dejé la " + itemRecompensa.nombre() + " en el piso!")
     }
 }
+
 class NPCJefe inherits NPC {
 
     override method interactuarCon(jugador) {
@@ -156,6 +179,8 @@ class Muro {
     method image() = "muro.png"
     
     method esAtravesable() = false
+    method esInteractuable() = false
+    method puedeMostrarse() = true
     method interactuarCon(jugador) {}
 }
 
@@ -167,6 +192,8 @@ class Puerta {
     const property siguienteHabitacion = null
 
     method image() = "puerta.png"
+    method esInteractuable() = true
+    method puedeMostrarse() = true
 
     method esAtravesable() =
         npcsCondicion.all({ npc => npc.satisfecho() })

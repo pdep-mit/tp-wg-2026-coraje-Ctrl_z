@@ -31,9 +31,8 @@ class Habitacion {
     }
 
     method cargar() {
-        objetos.filter({ objeto => not player.inventario().contains(objeto) }).forEach({ objeto =>
-            game.addVisual(objeto)
-        })
+    objetos.filter({ objeto => objeto.puedeMostrarse() })
+        .forEach({ objeto => game.addVisual(objeto) })
     }
 
     method descargar() {
