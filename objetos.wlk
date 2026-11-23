@@ -2,9 +2,15 @@ object player {
     var property position = game.center()
     var property gano = false
     const property inventario = [] 
-    var property estaDisfrazado = false
+    var property vestimenta = ropaComun
 
-    method image() = if (estaDisfrazado) "disfraz.png" else "player2.png"
+    method image() = vestimenta.imagenDelJugador()
+
+    method ponerse(unaVestimenta) {
+        vestimenta = unaVestimenta
+    }
+
+    method llevaPuesto(unaVestimenta) = vestimenta == unaVestimenta
 
     method agarrar(unItem) {
         inventario.add(unItem)
@@ -14,14 +20,19 @@ object player {
         inventario.remove(unItem)
     }
 
-    method buscarItem(nombreItem) {
-        return inventario.find({ item => item.nombre() == nombreItem })
-    }
-
-    method tieneItem(nombreItem) {
-        return inventario.any({ item => item.nombre() == nombreItem })
+    method tieneItem(unItem) {
+        return inventario.contains(unItem)
     }
 } 
+
+object ropaComun {
+    method imagenDelJugador() = "player2.png"
+}
+
+object uniformeSancor {
+    method nombre() = "uniforme de Sancor Seguros"
+    method imagenDelJugador() = "disfraz.png"
+}
 
 class Item {
     var property position
@@ -44,15 +55,19 @@ class Item {
 }
 
 class Disfraz inherits Item {
+    const property imagenDelJugador = "disfraz.png"
 
     override method interactuarCon(jugador) {
-        super.interactuarCon(jugador)
-        jugador.estaDisfrazado(true)
+        super(jugador)
+        jugador.ponerse(self)
         game.say(jugador, "¡Con esta ropa de Sancor Seguros puedo engañar al Chiqui Tapia!.")
     }
 } 
 class Impresora {
     var property position
+    const property papel
+    const property tinta
+    const property itemImpreso
     var property imprimio = false
 
     method image() = "impresora.png"
@@ -64,21 +79,14 @@ class Impresora {
 
         if (imprimio) {
             game.say(self, "La impresora ya fue utilizada.")
-        } else if (jugador.tieneItem("papel") and jugador.tieneItem("tinta")) {
-            const papel = jugador.buscarItem("papel")
-            const tinta = jugador.buscarItem("tinta")
+        } else if (jugador.tieneItem(papel) and jugador.tieneItem(tinta)) {
             jugador.removerItem(papel)
             jugador.removerItem(tinta)
             papel.recogido(true)
             tinta.recogido(true)
 
-            const fotoDeMessi = new Item(
-                nombre = "foto de messi", 
-                image = "foto_messi.png", 
-                position = self.position()
-            )
-            jugador.agarrar(fotoDeMessi)
-            
+            jugador.agarrar(itemImpreso)
+
             imprimio = true
             game.say(jugador, "¡Imprimí la foto de Messi!")
         } else {
@@ -89,6 +97,8 @@ class Impresora {
 
 class Armario {
     var property position
+    const property llave
+    const property disfraz = uniformeSancor
     var property utilizado = false
 
     method image() = "armario.png"
@@ -99,8 +109,8 @@ class Armario {
     method interactuarCon(jugador) {
         if (utilizado) {
             game.say(self, "El armario ya está vacío.")
-        } else if (jugador.tieneItem("llave de armario")) {
-            jugador.estaDisfrazado(true)
+        } else if (jugador.tieneItem(llave)) {
+            jugador.ponerse(disfraz)
             utilizado = true
             game.say(jugador, "¡Con este uniforme de Sancor Seguros puedo engañar al Chiqui Tapia!")
         } else {
@@ -113,37 +123,60 @@ class NPC {
     var property position
     const property image
     const property itemDeseado
-    var property satisfecho = false
-    const property mensajeAgradecimiento = "¡Gracias por el " + itemDeseado + "! Podés pasar."
-    const property mensajeEspera = "Necesito un " + itemDeseado + " para dejarte pasar..."
+    var property estado = estadoEsperando
+    const property mensajeAgradecimiento = "¡Gracias por el " + itemDeseado.nombre() + "! Podés pasar."
+    const property mensajeEspera = "Necesito un " + itemDeseado.nombre() + " para dejarte pasar..."
     const property mensajeSatisfecho = "Ya tengo lo que necesito, ¡andá!"
 
     method esAtravesable() = false
     method esInteractuable() = true
     method puedeMostrarse() = true
 
-    method consumirItemDeseado(jugador) {
+    method satisfecho() = estado.estaSatisfecho()
 
-     if (itemDeseado != "") {
-        const itemAConsumir = jugador.buscarItem(itemDeseado)
-        jugador.removerItem(itemAConsumir)
-        itemAConsumir.recogido(true)
-     }
+    method cumpleCondicion(jugador) = jugador.tieneItem(itemDeseado)
+
+    method consumirItemDeseado(jugador) {
+        jugador.removerItem(itemDeseado)
+        itemDeseado.recogido(true)
     }
 
     method interactuarCon(jugador) {
-        if (self.satisfecho()) {
-            game.say(self, mensajeSatisfecho)
-        } else if (jugador.tieneItem(itemDeseado)) {
-            self.consumirItemDeseado(jugador)
-            satisfecho = true
-            game.say(self, mensajeAgradecimiento)
-            self.darRecompensa(jugador)
+        estado.interactuar(self, jugador)
+    }
+
+    method aceptar(jugador) {
+        self.consumirItemDeseado(jugador)
+        estado = estadoSatisfecho
+        game.say(self, mensajeAgradecimiento)
+        self.darRecompensa(jugador)
+    }
+
+    method rechazar(jugador) {
+        game.say(self, mensajeEspera)
+    }
+
+    method darRecompensa(jugador) {}
+}
+
+object estadoEsperando {
+    method estaSatisfecho() = false
+
+    method interactuar(npc, jugador) {
+        if (npc.cumpleCondicion(jugador)) {
+            npc.aceptar(jugador)
         } else {
-            game.say(self, mensajeEspera)
+            npc.rechazar(jugador)
         }
     }
-    method darRecompensa(jugador) {}
+}
+
+object estadoSatisfecho {
+    method estaSatisfecho() = true
+
+    method interactuar(npc, jugador) {
+        game.say(npc, npc.mensajeSatisfecho())
+    }
 }
 
 class NPCConRecompensa inherits NPC {
@@ -162,16 +195,13 @@ class NPCConRecompensa inherits NPC {
 
 class NPCJefe inherits NPC {
 
-    override method interactuarCon(jugador) {
-        if (not jugador.estaDisfrazado()) {
-            game.say(self, "¡que haces aca pibe, vos no te quejaste de mi idea del SupermegaCampeonDeCampeones?")
-            game.schedule(2000, { game.stop() })
-        } else if (self.satisfecho()) {
-            game.say(self, "¡todavia seguis aca ? anda rapido a preparar otro show de drones!")
-        } else {
-            satisfecho = true
-            game.say(self, "¡sos mi Confiable amigo de Sancor Seguros podes pasar!")
-        }
+    override method cumpleCondicion(jugador) = jugador.llevaPuesto(itemDeseado)
+
+    override method consumirItemDeseado(jugador) {}
+
+    override method rechazar(jugador) {
+        super(jugador)
+        game.schedule(2000, { game.stop() })
     }
 }
 class Muro {

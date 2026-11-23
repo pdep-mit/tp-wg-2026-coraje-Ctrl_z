@@ -77,7 +77,7 @@ object niveles {
         )
 
         const riquelme = new NPC(
-            itemDeseado = "mate",
+            itemDeseado = mate,
             image = "riquelme.png",
             position = game.at(8, 8)
         )
@@ -100,7 +100,18 @@ method prepararHabitacion2() {
         const papel = new Item(nombre = "papel", image = "papel.png", position = game.at(2, 2))
         const tinta = new Item(nombre = "tinta", image = "tinta.png", position = game.at(4, 2))
 
-        const impresora = new Impresora(position = game.at(5, 5))
+        const fotoDeMessi = new Item(
+            nombre = "foto de messi",
+            image = "foto_messi.png",
+            position = game.at(5, 5)
+        )
+
+        const impresora = new Impresora(
+            position = game.at(5, 5),
+            papel = papel,
+            tinta = tinta,
+            itemImpreso = fotoDeMessi
+        )
         const llaveArmario = new Item(
             nombre = "llave de armario",
             image = "llave.png",
@@ -108,7 +119,7 @@ method prepararHabitacion2() {
         )
 
         const dePaul = new NPCConRecompensa(
-            itemDeseado = "foto de messi",
+            itemDeseado = fotoDeMessi,
             image = "depaul.png",
             position = game.at(8, 8),
             itemRecompensa = llaveArmario,
@@ -117,7 +128,8 @@ method prepararHabitacion2() {
         )
 
         const armario = new Armario(
-            position = game.at(2, 8)
+            position = game.at(2, 8),
+            llave = llaveArmario
         )
 
         const puerta2 = new Puerta(
@@ -139,9 +151,12 @@ method prepararHabitacion2() {
         habitacion3.agregarBordes()
 
         const chiquiTapia = new NPCJefe(
-            itemDeseado = "", 
+            itemDeseado = uniformeSancor,
             image = "chiqui.png", 
-            position = game.at(7, 7)
+            position = game.at(7, 7),
+            mensajeEspera = "¡que haces aca pibe, vos no te quejaste de mi idea del SupermegaCampeonDeCampeones?",
+            mensajeAgradecimiento = "¡sos mi Confiable amigo de Sancor Seguros podes pasar!",
+            mensajeSatisfecho = "¡todavia seguis aca ? anda rapido a preparar otro show de drones!"
         )
 
         const puertaFinal = new Puerta(

@@ -6,7 +6,8 @@ import movimientos.*
 describe "Cambio de habitaciones y salida final" {
     const origen = new Habitacion(posicionInicial = game.at(1, 1))
     const destino = new Habitacion(posicionInicial = game.at(2, 2))
-    const guardia = new NPC(position = game.at(8, 8), image = "riquelme.png", itemDeseado = "mate")
+    const mate = new Item(position = game.at(2, 1), nombre = "mate", image = "mate.png")
+    const guardia = new NPC(position = game.at(8, 8), image = "riquelme.png", itemDeseado = mate)
     const paso = new Puerta(position = game.at(3, 1), npcsCondicion = [guardia], habitacionActual = origen, siguienteHabitacion = destino)
     const salida = new Puerta(position = game.at(3, 2), npcsCondicion = [])
 
@@ -29,7 +30,7 @@ describe "Cambio de habitaciones y salida final" {
 
     test "La transicion descarga el origen y permite ganar en la salida final" {
         self.preparar()
-        guardia.satisfecho(true)
+        guardia.estado(estadoSatisfecho)
         movimiento.mover(player, haciaLaDerecha)
         assert.equals(destino.posicionInicial(), player.position())
         assert.notThat(game.getObjectsIn(paso.position()).contains(paso))
@@ -41,7 +42,6 @@ describe "Cambio de habitaciones y salida final" {
     }
 
     test "Un item recogido no reaparece al volver a cargar su habitacion" {
-        const mate = new Item(position = game.at(2, 1), nombre = "mate", image = "mate.png")
         origen.agregarObjeto(mate)
         player.position(game.at(1, 1))
         game.addVisual(player)
