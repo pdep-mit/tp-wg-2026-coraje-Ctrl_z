@@ -1,0 +1,4 @@
+} else if (jugador.tieneItem(llave)) {
+            jugador.ponerse(disfraz)
+            utilizado = true
+            game.say(jugador, "¡Con este uniforme de Sancor Seguros puedo engañar al Chiqui Tapia!")

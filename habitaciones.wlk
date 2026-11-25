@@ -2,10 +2,11 @@
 import wollok.game.*
 import objetos.*
 
-class Habitacion {
+class Habitacion { 
+    var property fondo  = "habitacion1.jpeg"
     const property posicionInicial
+    
     var property objetos = []
-
     method agregarObjeto(objeto) {
         objetos.add(objeto)
     }
@@ -31,6 +32,8 @@ class Habitacion {
     }
 
     method cargar() {
+        game.boardGround("habitacion.png")
+
     objetos.filter({ objeto => objeto.puedeMostrarse() })
         .forEach({ objeto => game.addVisual(objeto) })
     }
@@ -41,11 +44,14 @@ class Habitacion {
         })
     }
 
-    method cambiarA(nuevaHabitacion) {
-        self.descargar()
-        nuevaHabitacion.cargar()
-        player.position(nuevaHabitacion.posicionInicial())
-    }
+    
+        method cambiarA(nuevaHabitacion) {
+    self.descargar()
+    nuevaHabitacion.cargar()
+    player.position(nuevaHabitacion.posicionInicial())
+
+}
+    
 }
 
 object niveles {
@@ -58,7 +64,7 @@ object niveles {
     )
 
     const habitacion3 = new Habitacion(
-        posicionInicial = game.at(1, 1)
+        posicionInicial = game.at(1, 1) 
     )
 
     method preparar() {
@@ -68,7 +74,8 @@ object niveles {
     }
 
     method prepararHabitacion1() {
-        habitacion1.agregarBordes()
+        habitacion1.agregarBordes() 
+        
 
         const mate = new Item(
             nombre = "mate",
@@ -83,7 +90,7 @@ object niveles {
         )
 
         const puerta = new Puerta(
-            position = game.at(13, 13),
+            position = game.at(13, 7),
             npcsCondicion = [riquelme],
             habitacionActual = habitacion1,
             siguienteHabitacion = habitacion2
@@ -96,6 +103,7 @@ object niveles {
 
 method prepararHabitacion2() {
         habitacion2.agregarBordes()
+
 
         const papel = new Item(nombre = "papel", image = "papel.png", position = game.at(2, 2))
         const tinta = new Item(nombre = "tinta", image = "tinta.png", position = game.at(4, 2))
@@ -133,7 +141,7 @@ method prepararHabitacion2() {
         )
 
         const puerta2 = new Puerta(
-            position = game.at(13, 13),
+            position = game.at(13, 7),
             npcsCondicion = [dePaul],
             habitacionActual = habitacion2,
             siguienteHabitacion = habitacion3
@@ -149,7 +157,6 @@ method prepararHabitacion2() {
     
     method prepararHabitacion3() {
         habitacion3.agregarBordes()
-
         const chiquiTapia = new NPCJefe(
             itemDeseado = uniformeSancor,
             image = "chiqui.png", 
@@ -160,7 +167,7 @@ method prepararHabitacion2() {
         )
 
         const puertaFinal = new Puerta(
-            position = game.at(13, 13),
+            position = game.at(13, 7),
             npcsCondicion = [chiquiTapia],
             habitacionActual = habitacion3,
             siguienteHabitacion = null
